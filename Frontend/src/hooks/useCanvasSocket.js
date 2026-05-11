@@ -72,15 +72,15 @@ const useCanvasSocket = ({
   /* ---------- BROADCAST LOCAL CHANGES (SAFE) ---------- */
   useEffect(() => {
     if (!hasLoaded.current) return;
-    if (isRemoteUpdate.current) {
+    if (isRemoteUpdate.current){
       isRemoteUpdate.current = false;
       return;
     }
 
-    // 🚫 Don't broadcast during drawing / erasing
+    // Don't broadcast during drawing / erasing
     if (toolActionType !== TOOL_ACTION_TYPES.NONE) return;
 
-    socket.emit("canvas-update", {
+    socket.emit("canvas-update",{
       canvasId,
       elements,
     });

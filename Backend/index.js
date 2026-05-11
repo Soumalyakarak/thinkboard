@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import http from "http";
 import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 import authRoutes from "./routes/auth.routes.js";
 import canvasRoutes from "./routes/canvas.routes.js";
@@ -12,13 +14,14 @@ import Canvas from "./models/canvas.model.js";
 import healthRoutes from "./routes/health.routes.js";  
 import { metricsMiddleware, metricsHandler } from "./middlewares/metrics.middleware.js"; 
 
-const app = express();
 
+const app = express();
+const CLIENT_URL = process.env.CLIENT_URL;
 /* ---------------- middleware ---------------- */
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: CLIENT_URL,
     credentials: true,
   })
 );
@@ -39,12 +42,12 @@ const server = http.createServer(app);
 /* ---------------- socket.io ---------------- */
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: CLIENT_URL,
     credentials: true,
   },
 });
 
-/* 🔥 SOCKET AUTH MIDDLEWARE */
+/*SOCKET AUTH MIDDLEWARE*/
 io.use((socket, next) => {
   try {
     const cookie = socket.handshake.headers.cookie;
@@ -58,7 +61,7 @@ io.use((socket, next) => {
     if (!token) throw new Error("No token");
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    socket.user = decoded; // { id, email }
+    socket.user = decoded; //{ id, email }
 
     next();
   } catch (err) {
@@ -79,7 +82,7 @@ io.on("connection", (socket) => {
       (id) => id.toString() === socket.user.id
     );
 
-    if (!isOwner && !isShared) {
+    if(!isOwner && !isShared){
       console.log("❌ Unauthorized canvas access");
       return;
     }
@@ -87,7 +90,7 @@ io.on("connection", (socket) => {
     socket.join(`canvas:${canvasId}`);
     console.log(`📌 ${socket.id} joined canvas:${canvasId}`);
 
-    // 🔥 send latest canvas state
+    //send latest canvas state
     socket.emit("canvas:init", canvas.elements);
   });
 

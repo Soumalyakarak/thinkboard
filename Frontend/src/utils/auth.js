@@ -1,5 +1,7 @@
+const API_URL = process.env.REACT_APP_API_URL;
+
 export const registerUser = async (data) => {
-    const res = await fetch("http://localhost:5000/api/auth/register", {
+    const res = await fetch(`${API_URL}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -14,10 +16,10 @@ export const registerUser = async (data) => {
   
 
 export const loginUser = async (credentials) => {
-    const res = await fetch("http://localhost:5000/api/auth/login", {
+    const res = await fetch(`${API_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include", // 🔥 cookie-based auth
+      credentials: "include", //cookie-based auth
       body: JSON.stringify(credentials)
     });
   
@@ -29,7 +31,7 @@ export const loginUser = async (credentials) => {
 };
 
 export const logout = async () => {
-  const res = await fetch("http://localhost:5000/api/auth/logout", {
+  const res = await fetch(`${API_URL}/api/auth/logout`, {
     method: "POST",
     credentials: "include",
   });
@@ -43,7 +45,7 @@ export const logout = async () => {
 
   
 export const getMe = async () => {
-  const res = await fetch("http://localhost:5000/api/auth/me", {
+  const res = await fetch(`${API_URL}/api/auth/me`, {
     credentials: "include",
   });
 
