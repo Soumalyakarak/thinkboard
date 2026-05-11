@@ -3,7 +3,6 @@ import { ApiError } from '../utils/ApiError.js'
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
-import bcrypt from "bcrypt";
 import { otpEmailTemplate } from "../utils/emailTemplate.js";
 
 export const register = async(req,res,next) => {
@@ -33,50 +32,51 @@ export const register = async(req,res,next) => {
     }
 }
 
-export const login = async (req,res,next) => {
-    try {
-        const { email, password } = req.body;
+export const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
 
-        if (!email || !password) {
-          throw new ApiError(400, "Email and password are required");
-        }
+    if (!email || !password) {
+      throw new ApiError(400, "Email and password are required");
+    }
 
-        const user = await User.findOne({email}).select("+password");
-        if(!user){
-          throw new ApiError(401, "Invalid Login credentials");
-        }
+    const user = await User.findOne({ email }).select("+password");
+    if (!user) {
+      throw new ApiError(401, "Invalid Login credentials");
+    }
 
-        const isMatch = await user.comparePassword(password);
-        if(!isMatch){
-          throw new ApiError(401, "Invalid Login credentials");
-        }
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      throw new ApiError(401, "Invalid Login credentials");
+    }
 
-        const token = jwt.sign(
-            { id: user._id, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN }
-        );
-      
-      res
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    );
+
+    res
       .status(200)
       .cookie("accessToken", token, {
-        httpOnly: true,       // ❗ JS cannot access
+        httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",   // CSRF protection
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .json({
         success: true,
         user: {
           id: user._id,
           name: user.name,
-          email: user.email
-        }
+          email: user.email,
+        },
       });
-    } catch (error) {
-        next(error);
-    }
-}
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 export const logout = (req, res) => {
     res

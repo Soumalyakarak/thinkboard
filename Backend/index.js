@@ -16,7 +16,7 @@ import { metricsMiddleware, metricsHandler } from "./middlewares/metrics.middlew
 
 
 const app = express();
-const CLIENT_URL = process.env.CLIENT_URL;
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
 /* ---------------- middleware ---------------- */
 app.use(cookieParser());
 app.use(
