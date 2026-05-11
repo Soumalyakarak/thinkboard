@@ -79,10 +79,15 @@ export const login = async (req, res, next) => {
 
 
 export const logout = (req, res) => {
-    res
-      .clearCookie("accessToken")
-      .status(200)
-      .json({ success: true, message: "Logged out" });
+  res
+    .clearCookie("accessToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
+    })
+    .status(200)
+    .json({ success: true, message: "Logged out" });
 };
 
 export const Me = async (req, res) => {
