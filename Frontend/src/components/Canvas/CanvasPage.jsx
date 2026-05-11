@@ -11,21 +11,21 @@ import boardContext from "../../store/board-context";
 
 import { BOARD_ACTIONS , TOOL_ACTION_TYPES } from "../../constants";
 import { updateCanvas } from "../../utils/canvas";
-
+const API_URL = process.env.REACT_APP_API_URL;
 
 const CanvasPageContent = ({ canvasId }) => {
   const navigate = useNavigate();
   const { elements,toolActionType, dispatchBoardAction } = useContext(boardContext);
 
   const saveTimeout = useRef(null);
-  const hasLoaded = useRef(false); // 🔥 prevents autosave on initial load
+  const hasLoaded = useRef(false); //prevents autosave on initial load
 
-  // 1️⃣ LOAD canvas (GET)
+  //LOAD canvas (GET)
   useEffect(() => {
     const loadCanvas = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/canvas/${canvasId}`,
+          `${API_URL}/api/canvas/${canvasId}`,
           { credentials: "include" }
         );
 
@@ -52,7 +52,7 @@ const CanvasPageContent = ({ canvasId }) => {
           },
         });
 
-        hasLoaded.current = true; // ✅ mark load complete
+        hasLoaded.current = true; //mark load complete
       } catch (err) {
         console.error(err);
       }
@@ -61,7 +61,7 @@ const CanvasPageContent = ({ canvasId }) => {
     loadCanvas();
   }, [canvasId, dispatchBoardAction, navigate]);
 
-  // 2️⃣ AUTOSAVE canvas (PUT)
+  //AUTOSAVE canvas (PUT)
   useEffect(() => {
     if (!hasLoaded.current) return; // ❗ don't save immediately after load
     if (!elements) return;
@@ -85,7 +85,7 @@ const CanvasPageContent = ({ canvasId }) => {
     }, 800);
   }, [elements, canvasId, navigate,toolActionType]);
 
-   // 🔥 SOCKET LOGIC (one line)
+   //SOCKET LOGIC (one line)
   useCanvasSocket({
     canvasId,
     dispatchBoardAction,

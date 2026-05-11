@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateCanvas from "../Canvas/CreateCanvas";
 import CanvasList from "../Canvas/CanvasList";
+const API_URL = process.env.REACT_APP_API_URL;
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -11,7 +12,7 @@ const Dashboard = () => {
 
   // Fetch logged-in user info
   useEffect(() => {
-    fetch("http://localhost:5000/api/auth/me", {
+    fetch(`${API_URL}/api/auth/me`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -33,7 +34,7 @@ const Dashboard = () => {
   }, []);
 
   const handleLogout = async () => {
-    await fetch("http://localhost:5000/api/auth/logout", {
+    await fetch(`${API_URL}/api/auth/logout`, {
       method: "POST",
       credentials: "include",
     });

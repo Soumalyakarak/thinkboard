@@ -1,5 +1,6 @@
+const API_URL = process.env.REACT_APP_API_URL;
 export const createCanvas = async (name) => {
-  const res = await fetch("http://localhost:5000/api/canvas", {
+  const res = await fetch(`${API_URL}/api/canvas`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -8,7 +9,7 @@ export const createCanvas = async (name) => {
     body: JSON.stringify({ name }),
   });
 
-  // 🔥 read text FIRST
+  //read text FIRST
   const text = await res.text();
 
   let data;
@@ -30,9 +31,9 @@ export const createCanvas = async (name) => {
 
 
 export const getAllCanvases = async () => {
-  const res = await fetch("http://localhost:5000/api/canvas", {
+  const res = await fetch(`${API_URL}/api/canvas`, {
     method: "GET",
-    credentials: "include", // 🔥 required for auth cookie
+    credentials: "include", //required for auth cookie
     headers: {
       "Content-Type": "application/json",
     },
@@ -49,7 +50,7 @@ export const getAllCanvases = async () => {
 
 export const updateCanvas = async (canvasId, elements) => {
   const res = await fetch(
-    `http://localhost:5000/api/canvas/${canvasId}`,
+    `${API_URL}/api/canvas/${canvasId}`,
     {
       method: "PUT",
       credentials: "include",
@@ -80,7 +81,7 @@ export const updateCanvas = async (canvasId, elements) => {
 
 export const shareCanvas = async (canvasId, email) => {
   const res = await fetch(
-    `http://localhost:5000/api/canvas/${canvasId}/share`,
+    `${API_URL}/api/canvas/${canvasId}/share`,
     {
       method: "PUT",
       credentials: "include",
@@ -101,7 +102,7 @@ export const shareCanvas = async (canvasId, email) => {
 };
 
 export const deleteCanvas = async (canvasId) => {
-  const res = await fetch(`http://localhost:5000/api/canvas/${canvasId}`, {
+  const res = await fetch(`${API_URL}/api/canvas/${canvasId}`, {
     method: "DELETE",
     credentials: "include",
   });

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+const API_URL = process.env.REACT_APP_API_URL;
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -10,7 +11,7 @@ const Register = () => {
 
   const handleRegister = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
