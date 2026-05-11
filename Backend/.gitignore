@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+
+# env files  ← most important — never push this
+.env
+.env.local
+.env.production
+
+# logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# production build
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+
+# docker
+*.env.docker
