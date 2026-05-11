@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   Pencil,
@@ -14,12 +14,7 @@ import AuthContext from "../../store/AuthContext";
 import ProfileDropdown from "../Profile/ProfileDropdown";
 
 export default function ThinkboardHomepage() {
-  const [isLoaded, setIsLoaded] = useState(false);
   const { user, loading } = useContext(AuthContext);
-
-  useEffect(() => {
-    setIsLoaded(true);
-  }, []);
 
   return (
     <>
