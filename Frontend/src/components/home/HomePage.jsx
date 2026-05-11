@@ -15,6 +15,8 @@ import ProfileDropdown from "../Profile/ProfileDropdown";
 
 export default function ThinkboardHomepage() {
   const { user, loading } = useContext(AuthContext);
+  const ctaPath = user ? "/dashboard" : "/signup";
+  const signinPath = user ? "/dashboard" : "/login";
 
   return (
     <>
@@ -41,23 +43,23 @@ export default function ThinkboardHomepage() {
             </nav>
             <div className="nav-buttons">
               <a
-                href="https://github.com/excalidraw/excalidraw"
+                href="https://github.com/Soumalyakarak/thinkboard"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="github-stars"
               >
-                ⭐ 1k on Github
+                Github
               </a>
 
               {loading ? null : user ? (
                 <ProfileDropdown />
               ) : (
                 <>
-                  <Link to="/login" className="btn-signin">
+                  <Link to={signinPath} className="btn-signin">
                     Sign in
                   </Link>
 
-                  <Link to="/signup" className="btn-primary">
+                  <Link to={ctaPath} className="btn-primary">
                     Free whiteboard
                   </Link>
                 </>
@@ -147,11 +149,11 @@ export default function ThinkboardHomepage() {
               Ideate, Collaborate, Share. Simply with Thinkboard.
             </p>
             <div className="hero-cta">
-              <Link to="/signup" className="btn-hero-primary">
+              <Link to={ctaPath} className="btn-hero-primary">
                 Start drawing
               </Link>
 
-              <Link to="/login" className="btn-hero-secondary">
+              <Link to={signinPath} className="btn-hero-secondary">
                 Sign in
               </Link>
             </div>
@@ -293,10 +295,10 @@ export default function ThinkboardHomepage() {
               Something on your mind? Simply start drawing!
             </p>
             <div className="cta-buttons">
-              <Link to="/login" className="btn-hero-primary">
+              <Link to={signinPath} className="btn-hero-primary">
                 Draw now
               </Link>
-              <Link to="/signup" className="btn-hero-secondary">
+              <Link to={ctaPath} className="btn-hero-secondary">
                 Try for free
               </Link>
             </div>
@@ -324,11 +326,11 @@ export default function ThinkboardHomepage() {
               Join thousands of creators who are already using Thinkboard
             </p>
             <div className="cta-buttons">
-              <Link to="/signup" className="btn-hero-primary">
+              <Link to={ctaPath} className="btn-hero-primary">
                 Get started free
               </Link>
 
-              <Link to="/login" className="btn-hero-secondary">
+              <Link to={signinPath} className="btn-hero-secondary">
                 Explore features
               </Link>
             </div>

@@ -63,6 +63,7 @@ body {
     padding: 2rem 0;
     opacity: 0;
     animation: fadeInDown 0.8s ease forwards;
+    position: relative; 
 }
 
 .logo {
@@ -92,9 +93,12 @@ body {
 }
 
 .nav {
+    position: absolute; /* ✅ add this */
+    left: 50%;          /* ✅ add this */
+    transform: translateX(-50%); 
     display: flex;
     gap: 2rem;
-    align-items: center;
+    /* align-items: center; */
 }
 
 .nav-link {
