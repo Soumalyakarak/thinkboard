@@ -30,18 +30,23 @@ export const metricsHandler = async (req, res) => {
 const pushMetrics = async () => {
   try {
     const metrics = await register.getMetricsAsJSON();
-
     const timeseries = [];
+
     for (const metric of metrics) {
       for (const value of metric.values) {
         const labels = {
-          __name__: metric.name,
+          __name__: String(metric.name),
           job: "thinkboard-backend",
-          ...value.labels,
         };
+
+        // ✅ Convert all label values to strings
+        for (const [k, v] of Object.entries(value.labels || {})) {
+          labels[String(k)] = String(v);
+        }
+
         timeseries.push({
           labels,
-          samples: [{ value: value.value, timestamp: Date.now() }],
+          samples: [{ value: Number(value.value), timestamp: Date.now() }],
         });
       }
     }
@@ -50,18 +55,18 @@ const pushMetrics = async () => {
       `${process.env.GRAFANA_USERNAME}:${process.env.GRAFANA_API_KEY}`
     ).toString("base64");
 
-    // Use prometheus-remote-write
-    const { write } = await import("prometheus-remote-write");
-    await write(timeseries, {
+    const { pushTimeseries } = await import("prometheus-remote-write");
+
+    await pushTimeseries(timeseries, {
       url: process.env.GRAFANA_PUSH_URL,
       headers: {
         Authorization: `Basic ${credentials}`,
       },
     });
 
-    console.log("Metrics pushed to Grafana");
+    console.log("✅ Metrics pushed to Grafana");
   } catch (err) {
-    console.error("Grafana push failed:", err.message);
+    console.error("❌ Grafana push failed:", err.message);
   }
 };
 
