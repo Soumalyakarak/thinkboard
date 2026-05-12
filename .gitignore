@@ -1,0 +1,11 @@
+.vercel
+# Environment files
+.env
+.env.local
+.env.production
+
+# Vercel
+.vercel
+
+# OS
+.DS_Store
