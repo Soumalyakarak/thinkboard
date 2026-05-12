@@ -1,9 +1,12 @@
 import client from "prom-client";
 
 const register = new client.Registry();
+
+//Add job label so Grafana can identify your app
+register.setDefaultLabels({ job: "thinkboard-backend" });
+
 client.collectDefaultMetrics({ register });
 
-// Custom metric — HTTP requests
 const httpRequestCounter = new client.Counter({
   name: "http_requests_total",
   help: "Total HTTP requests",
@@ -27,6 +30,7 @@ export const metricsHandler = async (req, res) => {
   res.end(await register.metrics());
 };
 
+//Push using correct content type for Prometheus remote write
 const pushMetrics = async () => {
   try {
     const metrics = await register.metrics();
@@ -35,16 +39,21 @@ const pushMetrics = async () => {
       `${process.env.GRAFANA_USERNAME}:${process.env.GRAFANA_API_KEY}`
     ).toString("base64");
 
-    await fetch(process.env.GRAFANA_PUSH_URL, {
+    const response = await fetch(process.env.GRAFANA_PUSH_URL, {
       method: "POST",
       headers: {
-        "Content-Type": "text/plain",
+        "Content-Type": "text/plain; version=0.0.4", 
         Authorization: `Basic ${credentials}`,
       },
       body: metrics,
     });
 
-    console.log("Metrics pushed to Grafana");
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error("Grafana push error:", response.status, errText);
+    } else {
+      console.log("Metrics pushed to Grafana");
+    }
   } catch (err) {
     console.error("Grafana push failed:", err.message);
   }
