@@ -83,7 +83,7 @@ io.on("connection", (socket) => {
     );
 
     if(!isOwner && !isShared){
-      console.log("❌ Unauthorized canvas access");
+      console.log("Unauthorized canvas access");
       return;
     }
 

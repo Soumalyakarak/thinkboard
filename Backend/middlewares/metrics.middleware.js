@@ -39,7 +39,7 @@ const pushMetrics = async () => {
           job: "thinkboard-backend",
         };
 
-        // ✅ Convert all label values to strings
+        //Convert all label values to strings
         for (const [k, v] of Object.entries(value.labels || {})) {
           labels[String(k)] = String(v);
         }
@@ -64,9 +64,9 @@ const pushMetrics = async () => {
       },
     });
 
-    console.log("✅ Metrics pushed to Grafana");
+    console.log("Metrics pushed to Grafana");
   } catch (err) {
-    console.error("❌ Grafana push failed:", err.message);
+    console.error("Grafana push failed:", err.message);
   }
 };
 

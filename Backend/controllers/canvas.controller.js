@@ -126,35 +126,35 @@ export const shareCanvas = async (req, res, next) => {
   try {
     const { canvasId } = req.params;
     const { email } = req.body;
-    const userId = req.user.id; // authenticated user
+    const userId = req.user.id; //authenticated user
 
     if (!email) {
       throw new ApiError(400, "Email is required");
     }
 
-    // 1️⃣ Find canvas
+    //Find canvas
     const canvas = await Canvas.findById(canvasId);
     if (!canvas) {
       throw new ApiError(404, "Canvas not found");
     }
 
-    // 2️⃣ Only owner can share
+    //Only owner can share
     if (canvas.owner.toString() !== userId) {
       throw new ApiError(403, "Only the owner can share this canvas");
     }
 
-    // 3️⃣ Find user by email
+    //Find user by email
     const userToShare = await User.findOne({ email });
     if (!userToShare) {
       throw new ApiError(404, "User with this email does not exist");
     }
 
-    // 4️⃣ Owner cannot add themselves
+    //Owner cannot add themselves
     if (userToShare._id.toString() === userId) {
       throw new ApiError(400, "You cannot share the canvas with yourself");
     }
 
-    // 5️⃣ Prevent duplicate sharing
+    //Prevent duplicate sharing
     const alreadyShared = canvas.sharedWith.some(
       (id) => id.toString() === userToShare._id.toString()
     );
@@ -163,7 +163,7 @@ export const shareCanvas = async (req, res, next) => {
       throw new ApiError(409, "User already has access to this canvas");
     }
 
-    // 6️⃣ Add user to sharedWith
+    //Add user to sharedWith
     canvas.sharedWith.push(userToShare._id);
     await canvas.save();
 
@@ -190,7 +190,7 @@ export const deleteCanvas = async (req, res, next) => {
       throw new ApiError(404, "Canvas not found");
     }
 
-    // Only owner can delete
+    //Only owner can delete
     if (canvas.owner.toString() !== userId) {
       throw new ApiError(403, "Only the owner can delete this canvas");
     }
