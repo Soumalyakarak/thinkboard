@@ -1,10 +1,7 @@
 import client from "prom-client";
 
 const register = new client.Registry();
-
-//Add job label so Grafana can identify your app
 register.setDefaultLabels({ job: "thinkboard-backend" });
-
 client.collectDefaultMetrics({ register });
 
 const httpRequestCounter = new client.Counter({
@@ -30,30 +27,39 @@ export const metricsHandler = async (req, res) => {
   res.end(await register.metrics());
 };
 
-//Push using correct content type for Prometheus remote write
 const pushMetrics = async () => {
   try {
-    const metrics = await register.metrics();
+    const metrics = await register.getMetricsAsJSON();
+
+    const timeseries = [];
+    for (const metric of metrics) {
+      for (const value of metric.values) {
+        const labels = {
+          __name__: metric.name,
+          job: "thinkboard-backend",
+          ...value.labels,
+        };
+        timeseries.push({
+          labels,
+          samples: [{ value: value.value, timestamp: Date.now() }],
+        });
+      }
+    }
 
     const credentials = Buffer.from(
       `${process.env.GRAFANA_USERNAME}:${process.env.GRAFANA_API_KEY}`
     ).toString("base64");
 
-    const response = await fetch(process.env.GRAFANA_PUSH_URL, {
-      method: "POST",
+    // Use prometheus-remote-write
+    const { write } = await import("prometheus-remote-write");
+    await write(timeseries, {
+      url: process.env.GRAFANA_PUSH_URL,
       headers: {
-        "Content-Type": "text/plain; version=0.0.4", 
         Authorization: `Basic ${credentials}`,
       },
-      body: metrics,
     });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error("Grafana push error:", response.status, errText);
-    } else {
-      console.log("Metrics pushed to Grafana");
-    }
+    console.log("Metrics pushed to Grafana");
   } catch (err) {
     console.error("Grafana push failed:", err.message);
   }
