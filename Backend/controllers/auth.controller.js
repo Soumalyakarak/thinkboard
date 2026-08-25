@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+import dns from "dns";
 import { otpEmailTemplate } from "../utils/emailTemplate.js";
 
 export const register = async (req, res, next) => {
@@ -121,13 +122,14 @@ export const forgotPassword = async (req, res) => {
       host: "smtp.gmail.com",
       port: 587,
       secure: false,
-      family: 4,
-
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
-
+      // Custom DNS lookup forcing IPv4 resolution
+      lookup: (hostname, options, callback) => {
+        dns.lookup(hostname, { family: 4 }, callback);
+      },
       connectionTimeout: 10000,
       greetingTimeout: 10000,
       socketTimeout: 20000,
