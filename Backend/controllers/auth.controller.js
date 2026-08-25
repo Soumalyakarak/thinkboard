@@ -121,11 +121,16 @@ export const forgotPassword = async (req, res) => {
       host: "smtp.gmail.com",
       port: 587,
       secure: false,
+      family: 4,
+
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
-      family: 4,
+
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 20000,
     });
 
     console.log("Verifying SMTP connection...");
@@ -152,7 +157,6 @@ export const forgotPassword = async (req, res) => {
     return res.status(200).json({
       message: "If this email exists, an OTP has been sent.",
     });
-
   } catch (err) {
     console.error("Forgot password error:", err);
 
