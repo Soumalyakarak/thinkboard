@@ -109,43 +109,23 @@ export const forgotPassword = async (req, res) => {
   try {
     const user = await User.findOne({ email });
 
-    // Don't reveal if email exists or not (security best practice)
     if (!user) {
-      return res
-        .status(200)
-        .json({ message: "If this email exists, an OTP has been sent." });
+      return res.status(200).json({
+        message: "If this email exists, an OTP has been sent.",
+      });
     }
 
-    // Generate 6-digit OTP
     const otp = crypto.randomInt(100000, 999999).toString();
 
-    // Save OTP + expiry (10 mins) to user document
-    user.resetOtp = otp;
-    user.resetOtpExpiry = Date.now() + 10 * 60 * 1000; //10 minutes
-
-    await user.save({ validateBeforeSave: false }); // skips validator,hook still hashes
-
-    console.log("Creating SMTP transporter...");
-
-    // Send OTP via email
-    // const transporter = nodemailer.createTransport({
-    //   host: "smtp.gmail.com",
-    //   port: 587,
-    //   secure: false,
-    
-    //   auth: {
-    //     user: process.env.EMAIL_USER,
-    //     pass: process.env.EMAIL_PASS,
-    //   },
-    
-    //   family: 4,
-    // });
     const transporter = nodemailer.createTransport({
-      service: "Gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      family: 4,
     });
 
     console.log("Verifying SMTP connection...");
@@ -163,9 +143,16 @@ export const forgotPassword = async (req, res) => {
 
     console.log("Email sent successfully:", info.messageId);
 
+    // Save OTP only after email is successfully sent
+    user.resetOtp = otp;
+    user.resetOtpExpiry = Date.now() + 10 * 60 * 1000;
+
+    await user.save({ validateBeforeSave: false });
+
     return res.status(200).json({
       message: "If this email exists, an OTP has been sent.",
     });
+
   } catch (err) {
     console.error("Forgot password error:", err);
 
