@@ -120,8 +120,8 @@ export const forgotPassword = async (req, res) => {
 
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -130,9 +130,9 @@ export const forgotPassword = async (req, res) => {
       lookup: (hostname, options, callback) => {
         dns.lookup(hostname, { family: 4 }, callback);
       },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 20000,
+      // connectionTimeout: 10000,
+      // greetingTimeout: 10000,
+      // socketTimeout: 20000,
     });
 
     console.log("Verifying SMTP connection...");
