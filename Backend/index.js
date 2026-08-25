@@ -11,9 +11,11 @@ import authRoutes from "./routes/auth.routes.js";
 import canvasRoutes from "./routes/canvas.routes.js";
 import errorHandler from "./middlewares/error.middleware.js";
 import Canvas from "./models/canvas.model.js";
-import healthRoutes from "./routes/health.routes.js";  
-import { metricsMiddleware, metricsHandler } from "./middlewares/metrics.middleware.js"; 
-
+import healthRoutes from "./routes/health.routes.js";
+import {
+  metricsMiddleware,
+  metricsHandler,
+} from "./middlewares/metrics.middleware.js";
 
 const app = express();
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
@@ -21,17 +23,17 @@ const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
 app.use(cookieParser());
 app.use(
   cors({
-    origin: CLIENT_URL,
+    origin: ["http://localhost:3000", CLIENT_URL],
     credentials: true,
   })
 );
 app.use(express.json());
-app.use(metricsMiddleware);      
+app.use(metricsMiddleware);
 
 /* ---------------- routes ---------------- */
 app.use("/api/auth", authRoutes);
 app.use("/api/canvas", canvasRoutes);
-app.use("/api/health", healthRoutes);        
+app.use("/api/health", healthRoutes);
 app.get("/metrics", metricsHandler);
 /* ---------------- error handler ---------------- */
 app.use(errorHandler);
@@ -82,7 +84,7 @@ io.on("connection", (socket) => {
       (id) => id.toString() === socket.user.id
     );
 
-    if(!isOwner && !isShared){
+    if (!isOwner && !isShared) {
       console.log("Unauthorized canvas access");
       return;
     }
