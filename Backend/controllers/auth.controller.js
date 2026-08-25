@@ -1,36 +1,36 @@
-import User from '../models/user.model.js'
-import { ApiError } from '../utils/ApiError.js'
+import User from "../models/user.model.js";
+import { ApiError } from "../utils/ApiError.js";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import { otpEmailTemplate } from "../utils/emailTemplate.js";
 
-export const register = async(req,res,next) => {
-    try {
-        const {name,email,password} = req.body;   
-        if(!name || !email || !password){
-            throw new ApiError(400,"All fields are required");
-        }
-
-        const existingUser = await User.findOne({email});
-        if(existingUser){
-            throw new ApiError(409,"User already exist");
-        }
-
-        const user = await User.create({name,email,password});
-        res.status(201).json({
-            success: true,
-            message: "User registered successfully",
-            user: {
-              id: user._id,
-              name: user.name,
-              email: user.email
-            }
-        });
-    }catch(error){
-        next(error);
+export const register = async (req, res, next) => {
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+      throw new ApiError(400, "All fields are required");
     }
-}
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      throw new ApiError(409, "User already exist");
+    }
+
+    const user = await User.create({ name, email, password });
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const login = async (req, res, next) => {
   try {
@@ -77,7 +77,6 @@ export const login = async (req, res, next) => {
   }
 };
 
-
 export const logout = (req, res) => {
   res
     .clearCookie("accessToken", {
@@ -112,7 +111,9 @@ export const forgotPassword = async (req, res) => {
 
     // Don't reveal if email exists or not (security best practice)
     if (!user) {
-      return res.status(200).json({ message: "If this email exists, an OTP has been sent." });
+      return res
+        .status(200)
+        .json({ message: "If this email exists, an OTP has been sent." });
     }
 
     // Generate 6-digit OTP
@@ -121,28 +122,57 @@ export const forgotPassword = async (req, res) => {
     // Save OTP + expiry (10 mins) to user document
     user.resetOtp = otp;
     user.resetOtpExpiry = Date.now() + 10 * 60 * 1000; //10 minutes
-    
+
     await user.save({ validateBeforeSave: false }); // skips validator,hook still hashes
 
+    console.log("Creating SMTP transporter...");
+
     // Send OTP via email
+    // const transporter = nodemailer.createTransport({
+    //   host: "smtp.gmail.com",
+    //   port: 587,
+    //   secure: false,
+    
+    //   auth: {
+    //     user: process.env.EMAIL_USER,
+    //     pass: process.env.EMAIL_PASS,
+    //   },
+    
+    //   family: 4,
+    // });
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS, 
+        pass: process.env.EMAIL_PASS,
       },
     });
 
-    await transporter.sendMail({
+    console.log("Verifying SMTP connection...");
+
+    await transporter.verify();
+
+    console.log("SMTP connection successful!");
+
+    const info = await transporter.sendMail({
       from: `"Thinkboard" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Your Thinkboard Password Reset OTP",
-      html: otpEmailTemplate(otp), 
+      html: otpEmailTemplate(otp),
     });
-    res.status(200).json({ message: "If this email exists, an OTP has been sent." });
 
+    console.log("Email sent successfully:", info.messageId);
+
+    return res.status(200).json({
+      message: "If this email exists, an OTP has been sent.",
+    });
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    console.error("Forgot password error:", err);
+
+    return res.status(500).json({
+      message: "Server error",
+      error: err.message,
+    });
   }
 };
 
@@ -152,14 +182,15 @@ export const resetPassword = async (req, res) => {
   try {
     const user = await User.findOne({ email });
 
-    if (!user)
-      return res.status(400).json({ message: "Invalid request." });
+    if (!user) return res.status(400).json({ message: "Invalid request." });
 
     if (user.resetOtp !== otp)
       return res.status(400).json({ message: "Invalid OTP." });
 
     if (Date.now() > user.resetOtpExpiry)
-      return res.status(400).json({ message: "OTP has expired. Please request a new one." });
+      return res
+        .status(400)
+        .json({ message: "OTP has expired. Please request a new one." });
 
     user.password = newPassword;
     user.resetOtp = undefined;
@@ -168,7 +199,6 @@ export const resetPassword = async (req, res) => {
     await user.save({ validateBeforeSave: false }); //skips validator,hook still hashes
 
     res.status(200).json({ message: "Password reset successful." });
-
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
