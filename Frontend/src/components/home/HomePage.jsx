@@ -2,6 +2,9 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   Pencil,
+  Github,
+  Linkedin,
+  Youtube,
   Lightbulb,
   MessageSquare,
 } from "lucide-react";
