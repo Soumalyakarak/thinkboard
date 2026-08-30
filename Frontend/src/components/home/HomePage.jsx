@@ -114,7 +114,7 @@ export default function ThinkboardHomepage() {
               >
                 <div className="sketch-box purple">brainstorm</div>
               </div>
-              <div
+              {/* <div
                 className="sketch-element"
                 style={{ bottom: "25%", left: "5%", "--delay": "1.5s" }}
               >
@@ -125,7 +125,7 @@ export default function ThinkboardHomepage() {
                 style={{ bottom: "20%", right: "8%", "--delay": "1.8s" }}
               >
                 <Heart className="sketch-heart" />
-              </div>
+              </div> */}
               <div
                 className="sketch-element"
                 style={{
@@ -139,7 +139,7 @@ export default function ThinkboardHomepage() {
               </div>
             </div>
 
-            <div className="hero-badge">🌟 knowledge</div>
+            <div className="hero-badge">🌟 Ideate</div>
             <h1 className="hero-title">
               Say hi to <span className="whiteboard-text">Thinkboard</span>
             </h1>

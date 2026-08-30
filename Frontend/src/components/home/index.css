@@ -13,6 +13,10 @@ body {
 .homepage {
     min-height: 100vh;
     background: #fefdfb;
+    background-image: 
+        linear-gradient(to right, rgba(203, 213, 225, 0.185) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(203, 213, 225, 0.185) 1px, transparent 1px);
+    background-size: 32px 32px;
     position: relative;
     overflow: hidden;
 }
@@ -60,10 +64,11 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2rem 0;
+    padding: 1.5rem 0;
     opacity: 0;
     animation: fadeInDown 0.8s ease forwards;
     position: relative; 
+    width: 100%;
 }
 
 .logo {
@@ -71,6 +76,8 @@ body {
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
+    text-decoration: none;
+    flex-shrink: 0;
 }
 
 .logo-icon {
@@ -93,12 +100,17 @@ body {
 }
 
 .nav {
-    position: absolute; /* ✅ add this */
-    left: 50%;          /* ✅ add this */
-    transform: translateX(-50%); 
     display: flex;
     gap: 2rem;
-    /* align-items: center; */
+    align-items: center;
+}
+
+@media (min-width: 1025px) {
+    .nav {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }
 
 .nav-link {
@@ -118,6 +130,34 @@ body {
     display: flex;
     gap: 1rem;
     align-items: center;
+    flex-shrink: 0;
+}
+
+/* Hide non-critical buttons on small screens */
+@media (max-width: 768px) {
+    .nav {
+        display: none; /* Hide middle links on mobile */
+    }
+
+    .github-stars {
+        display: none; /* Hide GitHub star badge on mobile to save space */
+    }
+
+    .header {
+        padding: 1rem 0;
+    }
+
+    .btn-signin,
+    .btn-primary {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-signin {
+        display: none; /* Keep only primary CTA on extra-small screens */
+    }
 }
 
 .github-stars {
@@ -313,39 +353,26 @@ body {
     position: absolute;
     opacity: 0;
     animation: fadeIn 1s ease forwards;
-}
+} 
 
-.sketch-box {
-    padding: 0.8rem 1.2rem;
-    background: transparent;
-    border: 2.5px solid;
-    border-radius: 8px;
+.sketch-box,
+.sketch-note {
     font-family: 'Virgil', cursive;
-    font-size: 0.9rem;
-    transform: rotate(var(--rotation));
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 2px solid #1e293b;
+    box-shadow: 3px 3px 0px #1e293b;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: transform 0.3s ease;
     animation: float 6s ease-in-out infinite;
-    animation-delay: var(--delay);
+    animation-delay: var(--delay, 0s);
 }
 
-.sketch-box.orange {
-    border-color: #ea580c;
-    color: #ea580c;
-}
-
-.sketch-box.blue {
-    border-color: #0ea5e9;
-    color: #0ea5e9;
-}
-
-.sketch-box.green {
-    border-color: #10b981;
-    color: #10b981;
-}
-
-.sketch-box.purple {
-    border-color: #a855f7;
-    color: #a855f7;
-}
+.sketch-box.orange { background-color: #ffedd5; color: #c2410c; }
+.sketch-box.blue   { background-color: #dbeafe; color: #1e40af; }
+.sketch-box.green  { background-color: #dcfce7; color: #15803d; }
+.sketch-box.purple { background-color: #f3e8ff; color: #6b21a8; }
 
 .sketch-circle {
     width: 60px;
@@ -359,18 +386,6 @@ body {
     color: #ec4899;
     font-size: 2rem;
     animation: pulse 2s ease-in-out infinite;
-}
-
-.sketch-note {
-    padding: 1rem;
-    background: #fef3c7;
-    border: 2px solid #92400e;
-    font-family: 'Comic Neue', cursive;
-    font-size: 0.85rem;
-    color: #78350f;
-    transform: rotate(var(--rotation));
-    max-width: 150px;
-    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Showcase Sections */
@@ -901,6 +916,14 @@ body {
     color: #94a3b8;
 }
 
+/* Ensure mockups scale within mobile viewport widths */
+.showcase-visual {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+
 /* Animations */
 @keyframes fadeIn {
     to {
@@ -979,6 +1002,46 @@ body {
     }
 }
 
+@media (max-width: 768px) {
+    .hero-subtitle,
+    .hero-note,
+    .showcase-description,
+    .simple-subtitle,
+    .testimonial-subtitle,
+    .cta-subtitle,
+    .footer-tagline,
+    .footer-link,
+    .footer-copyright,
+    .badge-text,
+    .nav-link,
+    .btn-signin,
+    .btn-primary,
+    .btn-hero-primary,
+    .btn-hero-secondary,
+    .github-stars {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .canvas-mockup,
+    .gantt-mockup {
+        padding: 1rem;
+        min-height: auto;
+    }
+
+    .canvas-toolbar {
+        max-width: 100%;
+        overflow-x: auto; /* Scrollable toolbar if too wide */
+    }
+
+    .canvas-elements {
+        width: 100%;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .showcase-content {
@@ -1000,38 +1063,37 @@ body {
 }
 
 @media (max-width: 768px) {
-    .nav {
-        display: none;
-    }
-
     .hero {
-        padding: 4rem 0 6rem;
+        padding: 3rem 1rem 4rem;
     }
 
-    .showcase-section {
-        padding: 4rem 0;
+    .hero-title {
+        font-size: 2.5rem; /* Down from 3rem min clamp */
     }
 
-    .footer-content {
-        grid-template-columns: 1fr;
+    .hero-subtitle {
+        font-size: 1.1rem;
+        padding: 0 0.5rem;
     }
 
-    .footer-bottom {
+    .hero-cta {
         flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .btn-hero-primary,
+    .btn-hero-secondary {
+        width: 100%;
         text-align: center;
+        padding: 0.85rem 1.5rem;
     }
+}
 
-    .canvas-elements {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .gantt-header,
-    .gantt-row {
-        grid-template-columns: 1fr;
-    }
-
-    .gantt-task {
-        border-right: none;
-        border-bottom: 3px solid #92400e;
+/* Hide floating decor on mobile screens to stop text overlap */
+@media (max-width: 768px) {
+    .sketch-decorations {
+        display: none;
     }
 }
