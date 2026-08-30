@@ -10,8 +10,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userData = await getMe();   // already returns user
-        console.log("ME RESPONSE:", userData);
+        const userData = await getMe();  
         setUser(userData);
       } catch (err) {
         console.log("ME ERROR:", err);
