@@ -374,19 +374,6 @@ body {
 .sketch-box.green  { background-color: #dcfce7; color: #15803d; }
 .sketch-box.purple { background-color: #f3e8ff; color: #6b21a8; }
 
-.sketch-circle {
-    width: 60px;
-    height: 60px;
-    border: 3px solid #f59e0b;
-    border-radius: 50%;
-    transform: rotate(-5deg);
-}
-
-.sketch-heart {
-    color: #ec4899;
-    font-size: 2rem;
-    animation: pulse 2s ease-in-out infinite;
-}
 
 /* Showcase Sections */
 .showcase-section {

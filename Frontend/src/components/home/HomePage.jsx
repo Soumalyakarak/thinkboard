@@ -2,10 +2,6 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   Pencil,
-  Heart,
-  Github,
-  Linkedin,
-  Youtube,
   Lightbulb,
   MessageSquare,
 } from "lucide-react";
@@ -114,18 +110,6 @@ export default function ThinkboardHomepage() {
               >
                 <div className="sketch-box purple">brainstorm</div>
               </div>
-              {/* <div
-                className="sketch-element"
-                style={{ bottom: "25%", left: "5%", "--delay": "1.5s" }}
-              >
-                <div className="sketch-circle"></div>
-              </div>
-              <div
-                className="sketch-element"
-                style={{ bottom: "20%", right: "8%", "--delay": "1.8s" }}
-              >
-                <Heart className="sketch-heart" />
-              </div> */}
               <div
                 className="sketch-element"
                 style={{
