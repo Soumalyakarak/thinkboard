@@ -2,9 +2,8 @@ import User from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
-import dns from "dns";
 import { otpEmailTemplate } from "../utils/emailTemplate.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
 export const register = async (req, res, next) => {
   try {
@@ -118,39 +117,15 @@ export const forgotPassword = async (req, res) => {
 
     const otp = crypto.randomInt(100000, 999999).toString();
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-      // Custom DNS lookup forcing IPv4 resolution
-      lookup: (hostname, options, callback) => {
-        dns.lookup(hostname, { family: 4 }, callback);
-      },
-      // connectionTimeout: 10000,
-      // greetingTimeout: 10000,
-      // socketTimeout: 20000,
-    });
-
-    console.log("Verifying SMTP connection...");
-
-    await transporter.verify();
-
-    console.log("SMTP connection successful!");
-
-    const info = await transporter.sendMail({
-      from: `"Thinkboard" <${process.env.EMAIL_USER}>`,
+    await sendEmail({
       to: email,
       subject: "Your Thinkboard Password Reset OTP",
       html: otpEmailTemplate(otp),
     });
 
-    console.log("Email sent successfully:", info.messageId);
+    console.log("OTP Email sent successfully via Brevo");
 
-    // Save OTP only after email is successfully sent
+    //Save OTP only after email is successfully sent
     user.resetOtp = otp;
     user.resetOtpExpiry = Date.now() + 10 * 60 * 1000;
 
@@ -159,7 +134,7 @@ export const forgotPassword = async (req, res) => {
     return res.status(200).json({
       message: "If this email exists, an OTP has been sent.",
     });
-  } catch (err) {
+  }catch (err){
     console.error("Forgot password error:", err);
 
     return res.status(500).json({
