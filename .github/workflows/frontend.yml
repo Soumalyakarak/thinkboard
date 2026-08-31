@@ -28,6 +28,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to Vercel
+        working-directory: Frontend
         run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
