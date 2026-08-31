@@ -101,7 +101,7 @@ export default function ThinkboardHomepage() {
                 style={{
                   top: "45%",
                   right: "10%",
-                  "--delay": "1.2s",
+                  "--delay": "1.4s",
                   "--rotation": "8deg",
                 }}
               >
