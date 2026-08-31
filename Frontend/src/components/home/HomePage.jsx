@@ -1,13 +1,7 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import {
-  Pencil,
-  Github,
-  Linkedin,
-  Youtube,
-  Lightbulb,
-  MessageSquare,
-} from "lucide-react";
+import { Pencil, Lightbulb, MessageSquare } from "lucide-react";
+import { FaGithub, FaLinkedin, FaYoutube } from "react-icons/fa6";
 import "./index.css";
 import AuthContext from "../../store/AuthContext";
 import ProfileDropdown from "../Profile/ProfileDropdown";
@@ -342,13 +336,13 @@ export default function ThinkboardHomepage() {
                 </p>
                 <div className="footer-social">
                   <button className="social-icon" aria-label="Github">
-                    <Github size={20} color="#94a3b8" />
+                    <FaGithub size={20} color="#94a3b8" />
                   </button>
                   <button className="social-icon" aria-label="LinkedIn">
-                    <Linkedin size={20} color="#94a3b8" />
+                    <FaLinkedin size={20} color="#94a3b8" />
                   </button>
                   <button className="social-icon" aria-label="YouTube">
-                    <Youtube size={20} color="#94a3b8" />
+                    <FaYoutube size={20} color="#94a3b8" />
                   </button>
                 </div>
               </div>
